@@ -7,20 +7,20 @@ import bookmark_pyparser as bpp
 import os
 htmlfiles=[]
 for root,dirs,files in os.walk(bookmark_dir):
-	print root
+	print(root)
 	htmlfiles_tmp=[os.path.join(root,fils) for fils in files if fils.split('.')[-1].lower()=='html']
 	htmlfiles.extend(htmlfiles_tmp)
 
-print
+print()
 result={}
 numhref=0
 for bookmarkfile in htmlfiles:
-        print '############################## parsing ', bookmarkfile
+        print('############################## parsing ', bookmarkfile)
         parsedfile=bpp.bookmarkshtml.parseFile(file(bookmarkfile))
         numhref+=len(bpp.hyperlinks(parsedfile))
-        print '############################## creating a bookmarkDict '
+        print('############################## creating a bookmarkDict ')
         bmDict=bpp.bookmarkDict(parsedfile)
-        print '############################## merging latest file into result'
+        print('############################## merging latest file into result')
         result=bpp.merge_bookmarkDict(result,bmDict)
     
 
@@ -29,7 +29,7 @@ finalstr=bpp.serialize_bookmarkDict(result)
 finalfile.write(finalstr)
 finalfile.close()
 
-print 'total nunber of hyperlinks found = ', numhref
-print 'number of hyperlinks in final file=', len(bpp.hyperlinks_bookmarkDict(result))
-print 'number of unique hyperlinks =', len(set(bpp.hyperlinks_bookmarkDict(result)))
-print 'number of folders =', bpp.count_folders(result)
+print('total nunber of hyperlinks found = ', numhref)
+print('number of hyperlinks in final file=', len(bpp.hyperlinks_bookmarkDict(result)))
+print('number of unique hyperlinks =', len(set(bpp.hyperlinks_bookmarkDict(result))))
+print('number of folders =', bpp.count_folders(result))

@@ -96,9 +96,9 @@ def hyperlinks(parseresults):
     except:
         itemlist=[] # an empty folder
     for item in parseresults:
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             pass
-        elif 'Folder' in item.keys():
+        elif 'Folder' in list(item.keys()):
             #recursive
             foldercontents=hyperlinks(item)
             itemlist.extend(foldercontents)
@@ -113,9 +113,9 @@ def clean_tree(parseresults):
     except:
         itemlist=[] # an empty folder
     for item in parseresults:
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             pass
-        elif 'Folder' in item.keys():
+        elif 'Folder' in list(item.keys()):
             #recursive
             foldercontents=clean_tree(item)
             itemlist.append((item.Folder,foldercontents))
@@ -130,21 +130,21 @@ def bookmarkDict(parseresults):
     new={}
     try:
         for href,pos in parseresults._ParseResults__tokdict['HyperLink']:
-            if new.has_key(href):
+            if href in new:
                 new[href]=merge_entries(new[href],parseresults[pos])# if multiple href ? _merge_entries(,)
             else:
                 new[href]=parseresults[pos]
     except:
         pass
     for item in parseresults:
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             pass
-        elif 'Folder' in item.keys():
+        elif 'Folder' in list(item.keys()):
             #print 'Creating a sub-bookmarkDict'
             foldercontents=bookmarkDict(item) #recursion
             foldercontents['Folder']=item[0] # original string for folder header
-            if new.has_key(item['Folder']): # if there is more than one folder with the same name.
-                print '|'*30+' merging 2 bookmarkDict folders named:',item.Folder
+            if item['Folder'] in new: # if there is more than one folder with the same name.
+                print('|'*30+' merging 2 bookmarkDict folders named:',item.Folder)
                 new[item['Folder']]=merge_bookmarkDict(new[item['Folder']],foldercontents)
             else:
                 new[item['Folder']]=foldercontents
@@ -159,7 +159,7 @@ def depersonalisefolders(parseresults):
     folders=top_folders_dict(parseresults)
     tag=pp.Literal('PERSONAL_TOOLBAR_FOLDER="true" ')
     parser=pp.Combine(pp.Optional(pp.SkipTo(tag)+tag.suppress())+pp.SkipTo(pp.stringEnd))
-    for i in folders.values():
+    for i in list(folders.values()):
         i=i[0]
         parseresults[i][0]=parser.parseString(parseresults[i][0])[0]
     #return parseresults
@@ -172,9 +172,9 @@ def _folder_serialize(parseresults,indent):
     sresult=indstr+parseresults[0]+'\n'
     sresult+=indstr+'<DL><p>'+'\n'
     for item in parseresults[1:]:
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             sresult+=indstr+tab+item+'\n' #extra indentation
-        elif 'Folder' in item.keys():
+        elif 'Folder' in list(item.keys()):
             sresult+=_folder_serialize(item,indent+1)
     sresult+=indstr+'</DL><p>'+'\n'
     return sresult
@@ -186,7 +186,7 @@ def serialize(parseresults):
     result+='\n'
     result+='<DL><p>'+'\n'
     for item in parseresults[2:]:
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             result+='    '+item+'\n' #indentation
         else:
             result+=_folder_serialize(item,indent=1)
@@ -217,8 +217,8 @@ def serialize_bookmarkDict(bookdict):
     result+="<H1>Bookmarks Menu</H1>"+'\n'
     result+='\n'
     result+='<DL><p>'+'\n'
-    for item in bookdict.values():
-        if type(item)==types.StringType:
+    for item in list(bookdict.values()):
+        if type(item)==bytes:
             result+='    '+item+'\n' #indentation
         else:
             result+=_folder_serialize_bookmarkDict(item,indent=1)
@@ -257,9 +257,9 @@ def uniq(seq):
 def top_folders_dict(parseresults):
     itemlist={} # top folder?
     for j,item in enumerate(parseresults):
-        if type(item)==types.StringType:
+        if type(item)==bytes:
             pass
-        elif 'Folder' in item.keys():
+        elif 'Folder' in list(item.keys()):
             try:
                 itemlist[item.Folder]+=[j]
             except:
@@ -286,7 +286,7 @@ def hyperlinks_bookmarkDict(bookdict):
         elif item!='Folder' and type(bookdict[item])==str:
             itemlist.append(item)
         elif item!='Folder':
-            print 'found an unknown item!: ', item
+            print('found an unknown item!: ', item)
     return itemlist
 
 ## merges bookmarkDict
@@ -297,29 +297,29 @@ def merge_bookmarkDict(bookdict1,bookdict2):
     if new==bookdict2: #optimisation
         return new
     else:
-        for key,item in bookdict2.items():
+        for key,item in list(bookdict2.items()):
             if key in new:
                 if item == new[key]: #remove duplicates (optimisation)
-                    print 
-                    print '#'*10+' found duplicate of ',key
+                    print() 
+                    print('#'*10+' found duplicate of ',key)
                     pass
                 elif type(item)==str:
                     update=merge_entries(new[key],item) #strings must be different so need to be merged
                     new[key]=update
                 elif type(item)==dict:
-                    print '|'*30+' merging 2 bookmarkDicts folders named:', key
+                    print('|'*30+' merging 2 bookmarkDicts folders named:', key)
                     new[key]=merge_bookmarkDict(new[key],item)
                 else:
-                    print 'unexpected item:', item
+                    print('unexpected item:', item)
             else:
                 new[key]=item
     return new
 
 def merge_entries(line1,line2):
     """merges two bookmark entries that should have the same content but different tags"""
-    print 'merging 2 tokens strings'
+    print('merging 2 tokens strings')
     if line1==line2: #optimisation
-        print 'Tokens are identical!'
+        print('Tokens are identical!')
         new=copy.copy(line1)
     else: #parse strings, take earlist ADD_DATE and latest LAST_VISIT \ LAST_MODIFIED, choose ID, CHARSET etc from most recent visit.
         #parser
@@ -337,20 +337,20 @@ def merge_entries(line1,line2):
         l1=parser.parseString(line1)
         l2=parser.parseString(line2)
         #return l1,l2
-        print '1) ', line1[:500]
-        print '2) ', line2[:500]
+        print('1) ', line1[:500])
+        print('2) ', line2[:500])
         #Check for FEEDURL case
         if l1.feedurl!='':
-            print "Dealing with a smart bookmark"
-            print l1.feedurl
+            print("Dealing with a smart bookmark")
+            print(l1.feedurl)
             l1.href=l2.href
         #check HREF
         if l1.href!=l2.href:
-            print "Entries don't share location!"
+            print("Entries don't share location!")
             raise Exception
         #check ID
         if line1==line2.replace(l2.id,l1.id):
-            print "strings only differ by ID"
+            print("strings only differ by ID")
         # ADD_DATE
         l1ad,l2ad=l1.ad,l2.ad
         # Recent change
@@ -359,37 +359,37 @@ def merge_entries(line1,line2):
             if r in l1: l1recent=l1recent*(l1recent>l1[r][0]) or l1[r][0]
             if r in l2: l2recent=l2recent*(l2recent>l2[r][0]) or l2[r][0]
         if l1recent>l2recent:
-            print 'choosing (1)'
+            print('choosing (1)')
             new=copy.copy(line1)
             if l1ad=='' and l2ad=='':
                 pass #no ADD_DATE so it doesn't matter
             elif l1ad=='' and l2ad!='': #add ADD_DATE
-                print 'but using ADD_DATE from 2'
+                print('but using ADD_DATE from 2')
                 extra='ADD_DATE="'+str(l2ad[0])+'" '
                 if new[0:8]=='<DT><H3 ': new=new[0:8]+extra+new[8:] #bookmark foldername token
                 else: #must be bookmark token
                     inpos=15+len(l1.href) #position to insert ADD_DATE
                     new=new[0:inpos]+extra+new[inpos:]
             elif l2ad!='' and l2ad[0]<l1ad[0]: #replace ADD_DATE
-                print 'but replacing ADD_DATE with that from 2'
+                print('but replacing ADD_DATE with that from 2')
                 new=new.replace(str(l1ad[0]),str(l2ad[0])) #ADD_DATE should be first item in string with this number!
         else:
-            print 'choosing (2)'
+            print('choosing (2)')
             new=copy.copy(line2)
             if l2ad=='' and l1ad=='':
                 pass #no ADD_DATE so it doesn't matter
             elif l2ad=='' and l1ad!='':
-                print 'but using ADD_DATE from 1'
+                print('but using ADD_DATE from 1')
                 extra='ADD_DATE="'+str(l1ad[0])+'" '
                 if new[0:8]=='<DT><H3 ': new=new[0:8]+extra+new[8:] #bookmark foldername token
                 else: #must be bookmark token
                     inpos=15+len(l2.href) #position to insert ADD_DATE
                     new=new[0:inpos]+extra+new[inpos:]
             elif l1ad!='' and l1ad[0]<l2ad[0]:
-                print 'but replacing ADD_DATE with that from 1'
+                print('but replacing ADD_DATE with that from 1')
                 new=new.replace(str(l2ad[0]),str(l1ad[0])) #ADD_DATE should be first item in string with this number!
-        print 'NEW) ', new[:500]
-    print ''
+        print('NEW) ', new[:500])
+    print('')
     return new
         
 ##########
@@ -397,8 +397,8 @@ def merge_entries(line1,line2):
 def count_folders(bookmarkdict):
     """utility function to count the total number of folders in the collection"""
     count=0
-    for entry in bookmarkdict.values():
-        if type(entry)==types.DictType:
+    for entry in list(bookmarkdict.values()):
+        if type(entry)==dict:
             count+=1
             count+=count_folders(entry) #recursion again.
     return count
