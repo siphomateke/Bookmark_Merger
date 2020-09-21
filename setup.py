@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='bookmark_merger',
-        version='0.2.3',
+      version='0.3.3',
         description='code for merging multiple firefox bookmark.html files',
         long_description="""\
 Bookmarks merger allows the user to merge multiple firefox bookmark.html files 
