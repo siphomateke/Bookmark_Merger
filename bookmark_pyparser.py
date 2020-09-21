@@ -48,7 +48,8 @@ Do Not Edit! -->
      DO NOT EDIT! --><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Bookmarks</title></head>
 """]
 #headers = [ pp.And( pp.Literal(line.strip()) for line in head.splitlines()) for head in headers] # requires furthers changes to serialisation
-headers2 = [pp.Combine( pp.And( pp.Literal(line.strip())+pp.ZeroOrMore(pp.White()) for line in head.splitlines()) ,adjacent=False) for head in headers]
+headers2 = [pp.Combine(pp.And([pp.Literal(line.strip())+pp.ZeroOrMore(pp.White())
+                               for line in head.splitlines()]), adjacent=False) for head in headers]
 
 
 #header1
