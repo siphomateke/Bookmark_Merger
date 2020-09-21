@@ -96,7 +96,7 @@ def hyperlinks(parseresults):
     except:
         itemlist=[] # an empty folder
     for item in parseresults:
-        if type(item)==bytes:
+        if type(item) == str:
             pass
         elif 'Folder' in list(item.keys()):
             #recursive
@@ -113,7 +113,7 @@ def clean_tree(parseresults):
     except:
         itemlist=[] # an empty folder
     for item in parseresults:
-        if type(item)==bytes:
+        if type(item) == str:
             pass
         elif 'Folder' in list(item.keys()):
             #recursive
@@ -137,7 +137,7 @@ def bookmarkDict(parseresults):
     except:
         pass
     for item in parseresults:
-        if type(item)==bytes:
+        if type(item) == str:
             pass
         elif 'Folder' in list(item.keys()):
             #print 'Creating a sub-bookmarkDict'
@@ -172,7 +172,7 @@ def _folder_serialize(parseresults,indent):
     sresult=indstr+parseresults[0]+'\n'
     sresult+=indstr+'<DL><p>'+'\n'
     for item in parseresults[1:]:
-        if type(item)==bytes:
+        if type(item) == str:
             sresult+=indstr+tab+item+'\n' #extra indentation
         elif 'Folder' in list(item.keys()):
             sresult+=_folder_serialize(item,indent+1)
@@ -186,7 +186,7 @@ def serialize(parseresults):
     result+='\n'
     result+='<DL><p>'+'\n'
     for item in parseresults[2:]:
-        if type(item)==bytes:
+        if type(item) == str:
             result+='    '+item+'\n' #indentation
         else:
             result+=_folder_serialize(item,indent=1)
@@ -218,7 +218,7 @@ def serialize_bookmarkDict(bookdict):
     result+='\n'
     result+='<DL><p>'+'\n'
     for item in list(bookdict.values()):
-        if type(item)==bytes:
+        if type(item) == str:
             result+='    '+item+'\n' #indentation
         else:
             result+=_folder_serialize_bookmarkDict(item,indent=1)
@@ -257,7 +257,7 @@ def uniq(seq):
 def top_folders_dict(parseresults):
     itemlist={} # top folder?
     for j,item in enumerate(parseresults):
-        if type(item)==bytes:
+        if type(item) == str:
             pass
         elif 'Folder' in list(item.keys()):
             try:
