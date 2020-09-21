@@ -16,7 +16,7 @@ result={}
 numhref=0
 for bookmarkfile in htmlfiles:
         print('############################## parsing ', bookmarkfile)
-        parsedfile=bpp.bookmarkshtml.parseFile(file(bookmarkfile))
+        parsedfile = bpp.bookmarkshtml.parseFile(bookmarkfile)
         numhref+=len(bpp.hyperlinks(parsedfile))
         print('############################## creating a bookmarkDict ')
         bmDict=bpp.bookmarkDict(parsedfile)
@@ -24,7 +24,7 @@ for bookmarkfile in htmlfiles:
         result=bpp.merge_bookmarkDict(result,bmDict)
     
 
-finalfile=file('merged bookmarks.html', 'w')
+finalfile = open('merged bookmarks.html', 'w')
 finalstr=bpp.serialize_bookmarkDict(result)
 finalfile.write(finalstr)
 finalfile.close()

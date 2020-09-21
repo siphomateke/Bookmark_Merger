@@ -46,14 +46,14 @@ result={}
 numhref=0
 for bookmarkfile in htmlfiles:
         print('##### parsing ', os.path.relpath(bookmarkfile,path))
-        parsedfile=bpp.bookmarkshtml.parseFile(file(bookmarkfile))
+        parsedfile = bpp.bookmarkshtml.parseFile(bookmarkfile)
         numhref+=len(bpp.hyperlinks(parsedfile))
         print('#### creating a bookmarkDict ')
         bmDict=bpp.bookmarkDict(parsedfile)
         print('#### merging latest file into result')
         result=bpp.merge_bookmarkDict(result,bmDict)
     
-finalfile=file(outfile, 'w')
+finalfile = open(outfile, 'w')
 finalstr=bpp.serialize_bookmarkDict(result)
 finalfile.write(finalstr)
 finalfile.close()

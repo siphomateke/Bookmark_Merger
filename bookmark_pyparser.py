@@ -409,10 +409,10 @@ def count_folders(bookmarkdict):
 if __name__=="__main__":
     ##test
     #Loads a bookmarks.html file. 
-    #f=file("bookmarks 141208.html",'r')
-    #f=file("workshop\\old1\\test\\bookmarks test.html","r")
-    #f=file("bookmarks zi.html","r")
-    #f=file("test.html")
+    #f=open("bookmarks 141208.html",'r')
+    #f=open("workshop\\old1\\test\\bookmarks test.html","r")
+    #f=open("bookmarks zi.html","r")
+    #f=open("test.html")
     #bms=f.read()
     #f.close()
     #parsing 
@@ -429,7 +429,7 @@ if __name__=="__main__":
     #outfile.write(output)
     #outfile.close()
 
-    #f2=file("workshop\\old1\\test\\bookmarks zi.html","r")
+    #f2=open("workshop\\old1\\test\\bookmarks zi.html","r")
     #bms2=f2.read()
     #f2.close()
     #parsing 
