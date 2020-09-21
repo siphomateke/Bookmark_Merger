@@ -15,7 +15,7 @@ Description: Bookmarks merger allows the user to merge multiple firefox bookmark
 Keywords: firefox
 Platform: UNKNOWN
 Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
-Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.7
 Classifier: Development Status :: 3 - Alpha
 Classifier: Environment :: Console
 Classifier: Intended Audience :: Developers
